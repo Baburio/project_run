@@ -3,5 +3,6 @@ from .models import Run
 
 
 class RunSerializer(serializers.ModelSerializer):
-    model = Run
-    fields = '__all__'
+    class Meta:
+        model = Run
+        fields = '__all__'
