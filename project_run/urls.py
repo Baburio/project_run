@@ -19,10 +19,11 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from app_run.views import company_details
-from app_run.views import RunViewSet
+from app_run.views import RunViewSet, UserViewSet
 
 router = DefaultRouter()
 router.register('api/runs', RunViewSet )
+router.register('api/users', UserViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
