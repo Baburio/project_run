@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from app_run.views import company_details
-from app_run.views import RunViewSet, UserViewSet
+from app_run.views import RunViewSet, UserViewSet, RunStartView, RunStopView
 
 router = DefaultRouter()
 router.register('api/runs', RunViewSet )
@@ -28,6 +28,8 @@ router.register('api/users', UserViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/company_details/', company_details),
-    path('', include(router.urls)),
+    path('api/runs/<int:run_id>/start/', RunStartView.as_view()),
+    path('api/runs/<int:run_id>/stop/', RunStopView.as_view()),
 
-]
+    path('', include(router.urls)),
+    ]
