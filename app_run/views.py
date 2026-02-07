@@ -3,10 +3,12 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter
+from rest_framework import status
+
 from .serializers import RunSerializer, UserSerializer
 from django.conf import settings
 from .models import Run, User
-from rest_framework import status
+from django.shortcuts import get_object_or_404
 
 
 # Create your views here.
@@ -24,15 +26,32 @@ class RunViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.select_related('athlete').all()
     serializer_class = RunSerializer
 
+
 class RunStartView(APIView):
+
     def post(self, request, run_id):
-        Run.objects.filter(id = run_id).update(status = Run.Status.IN_PROGRESS )
+        run = get_object_or_404(Run, id = run_id)
+
+        if run.status == Run.Status.IN_PROGRESS:
+            return Response (status = status.HTTP_400_BAD_REQUEST)
+        
+        run.status = Run.Status.IN_PROGRESS
+        run.save()
+
         return Response (status=status.HTTP_200_OK)
+
 
 class RunStopView(APIView):
     def post(self, request, run_id):
-        Run.objects.filter(id = run_id).update(status = Run.Status.FINISHED )
+        run = get_object_or_404(Run, id = run_id)
+
+        if run.status == Run.Status.IN_PROGRESS:
+            return Response (status = status.HTTP_400_BAD_REQUEST)
+        
+        run.status = Run.Status.FINISHED
+        run.save()
         return Response (status=status.HTTP_200_OK)
+    
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
