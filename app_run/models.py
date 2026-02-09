@@ -8,7 +8,7 @@ class Run(models.Model):
         IN_PROGRESS = "in_progress", "Выполняется"
         FINISHED = "finished", "Закончен"
 
-    create_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     athlete = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()
     status = models.CharField(

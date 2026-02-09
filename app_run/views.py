@@ -36,7 +36,7 @@ class RunViewSet(viewsets.ModelViewSet):
     pagination_class = PagePagination
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ['status','athlete']
-    ordering_fields = ['create_at'] 
+    ordering_fields = ['created_at'] 
 
 
 class RunStartView(APIView):
