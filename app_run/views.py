@@ -25,7 +25,6 @@ def company_details(request):
     return Response(details)
 
 class PagePagination(PageNumberPagination):
-    page_size = 5
     page_size_query_param = 'size'
     max_page_size = 50
 
@@ -37,7 +36,7 @@ class RunViewSet(viewsets.ModelViewSet):
     pagination_class = PagePagination
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ['status','athlete']
-    ordering_fields = ['created_at'] 
+    ordering_fields = ['create_at'] 
 
 
 class RunStartView(APIView):
