@@ -7,9 +7,9 @@ from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework import status
 
-from .serializers import RunSerializer, UserSerializer
+from .serializers import RunSerializer, UserSerializer, AthleteInfoSerialzer
 from django.conf import settings
-from .models import Run, User
+from .models import Run, User, AthleteInfo
 from django.shortcuts import get_object_or_404
 
 
@@ -86,3 +86,29 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             return qs
         else:
             return qs
+
+class AthleteInfoViewSet(APIView):
+    def get(self, request, user_id):
+        user = get_object_or_404(User, id = user_id)
+        info, created = AthleteInfo.objects.get_or_create(user = user)
+        serializer = AthleteInfoSerialzer(
+            info,
+            context = {'request':request}
+        )
+        return Response(serializer.data)
+    
+    def put(self, request, user_id):
+        user =get_object_or_404(User, id = user_id)
+
+        if request.data.get('weight') > 900 or request.data.get('weight') < 0:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        info, created = AthleteInfo.objects.update_or_create(
+            user = user, 
+            defaults={
+            "goals" : request.data.get('goals'),
+            "weight" : request.data.get('weight'),
+            }
+            )
+
+        return Response(status=status.HTTP_200_OK)
