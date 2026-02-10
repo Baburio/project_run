@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Run
+from .models import Run, AthleteInfo
 
 
 class RunUSerSerializer(serializers.ModelSerializer):
@@ -35,3 +35,10 @@ class UserSerializer(serializers.ModelSerializer):
         
     def get_runs_finished(self,obj):
         return obj.run_set.filter(status = Run.Status.FINISHED).count()
+    
+
+class AthleteInfoSerialzer(serializers.ModelSerializer):
+    class Meta:
+        model = AthleteInfo
+        fields = ('goals','weight', 'user_id' )
+  
