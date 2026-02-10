@@ -99,8 +99,13 @@ class AthleteInfoViewSet(APIView):
     
     def put(self, request, user_id):
         user =get_object_or_404(User, id = user_id)
-
-        if int(request.data.get('weight') )> 900 or int(request.data.get('weight')) < 0:
+        
+        try:
+            weight = int(request.data.get('weight'))
+        except ValueError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+            
+        if weight > 900 or weight < 0:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         info, created = AthleteInfo.objects.update_or_create(
