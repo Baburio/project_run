@@ -19,12 +19,13 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from app_run.views import company_details
-from app_run.views import RunViewSet, UserViewSet, RunStartView, RunStopView, AthleteInfoViewSet, ChallengesViewSet
+from app_run.views import RunViewSet, UserViewSet, RunStartView, RunStopView, AthleteInfoViewSet, ChallengesViewSet, PositionViewSet
 
 router = DefaultRouter()
 router.register('api/runs', RunViewSet )
 router.register('api/users', UserViewSet)
 router.register('api/challenges', ChallengesViewSet)
+router.register('api/positions', PositionViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

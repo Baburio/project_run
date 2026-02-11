@@ -7,9 +7,9 @@ from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework import status
 
-from .serializers import RunSerializer, UserSerializer, AthleteInfoSerialzer, ChallengesSerializer
+from .serializers import RunSerializer, UserSerializer, AthleteInfoSerialzer, ChallengesSerializer, PositionSerializer
 from django.conf import settings
-from .models import Run, User, AthleteInfo, Challenge
+from .models import Run, User, AthleteInfo, Challenge, Position
 from django.shortcuts import get_object_or_404
 
 
@@ -135,3 +135,9 @@ class AthleteInfoViewSet(APIView):
 class ChallengesViewSet(viewsets.ModelViewSet):
     queryset = Challenge.objects.select_related('athlete').all()
     serializer_class = ChallengesSerializer
+
+class PositionViewSet(viewsets.ModelViewSet):
+    queryset = Position.objects.select_related('run').all()
+    serializer_class = PositionSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['run']
