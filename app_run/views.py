@@ -65,14 +65,22 @@ class RunStopView(APIView):
 
         runs_count = run.athlete.run_set.filter(status=Run.Status.FINISHED)
         runs_count = runs_count.count()
+        runs_distanse = run.athlete.run_set.aggregate(Sum('distance'))['distance__sum']
 
+        
         challenge = run.athlete.challenge_set.filter(full_name = "Сделай 10 Забегов!")
         if runs_count >= 10 and not challenge:
             Challenge.objects.create(
                 full_name = "Сделай 10 Забегов!",
                 athlete = run.athlete
                 )
-        
+
+        challenge = run.athlete.challenge_set.filter(full_name = "Пробеги 50 километров!")
+        if runs_count >= 50 and not challenge:
+            Challenge.objects.create(
+                full_name = "Пробеги 50 километров!",
+                athlete = run.athlete
+                )                
 
         coordinates = list(
             run.position_set
@@ -88,7 +96,7 @@ class RunStopView(APIView):
             for i in range(len(coordinates)-1):
                 distance += geodesic(coordinates[i], coordinates[i+1]).km
             run.distance = distance
-            
+
         run.save()
 
 
