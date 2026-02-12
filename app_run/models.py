@@ -8,9 +8,11 @@ class Run(models.Model):
         IN_PROGRESS = "in_progress", "Выполняется"
         FINISHED = "finished", "Закончен"
 
+    
+    distance = models.FloatField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     athlete = models.ForeignKey(User, on_delete=models.CASCADE)
-    comment = models.TextField()
+    comment = models.TextField(default = '')
     status = models.CharField(
         max_length = 20,
         choices = Status.choices,

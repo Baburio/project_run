@@ -11,7 +11,7 @@ from .serializers import RunSerializer, UserSerializer, AthleteInfoSerialzer, Ch
 from django.conf import settings
 from .models import Run, User, AthleteInfo, Challenge, Position
 from django.shortcuts import get_object_or_404
-
+from geopy.distance import geodesic
 
 # Create your views here.
 
@@ -72,6 +72,25 @@ class RunStopView(APIView):
                 full_name = "Сделай 10 Забегов!",
                 athlete = run.athlete
                 )
+        
+
+        coordinates = list(
+            run.position_set
+            .all().order_by("id")
+            .values_list("latitude", "longitude")
+            )
+        
+        distance = 0.0
+
+        if len(coordinates) < 2:
+            run.distance = distance 
+        else:    
+            for i in range(len(coordinates)-1):
+                distance += geodesic(coordinates[i], coordinates[i+1]).km
+            run.distance = distance
+            
+        run.save()
+
 
         return Response (status=status.HTTP_200_OK)
         
