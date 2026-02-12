@@ -37,7 +37,7 @@ class RunViewSet(viewsets.ModelViewSet):
     pagination_class = PagePagination
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ['status','athlete']
-    ordering_fields = ['created_at'] 
+    ordering_fields = ['created_at']
 
 
 class RunStartView(APIView):
@@ -92,10 +92,10 @@ class RunStopView(APIView):
             run.distance = distance
 
         run.save()
-        
+
         runs_distanse = run.athlete.run_set.aggregate(Sum('distance'))['distance__sum']
         challenge = run.athlete.challenge_set.filter(full_name = "Пробеги 50 километров!")
-        if runs_count >= 50 and not challenge:
+        if runs_distanse >= 50 and not challenge:
             Challenge.objects.create(
                 full_name = "Пробеги 50 километров!",
                 athlete = run.athlete
