@@ -12,6 +12,7 @@ from django.conf import settings
 from .models import Run, User, AthleteInfo, Challenge, Position
 from django.shortcuts import get_object_or_404
 from geopy.distance import geodesic
+from django.db.models import Sum
 
 # Create your views here.
 
