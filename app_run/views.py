@@ -164,6 +164,9 @@ class AthleteInfoViewSet(APIView):
 class ChallengesViewSet(viewsets.ModelViewSet):
     queryset = Challenge.objects.select_related('athlete').all()
     serializer_class = ChallengesSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['athlete']
+
 
 class PositionViewSet(viewsets.ModelViewSet):
     queryset = Position.objects.select_related('run').all()
