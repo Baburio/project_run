@@ -231,6 +231,7 @@ class UploadFIleView(APIView):
             else:
                 invalid_rows.append(raw_row)
         return Response (
-            {'created': created, 'invalid_rows':invalid_rows},
+            #{'created': created, 'invalid_rows':invalid_rows},
+            invalid_rows
             status=status.HTTP_200_OK
         )
