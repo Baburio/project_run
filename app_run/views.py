@@ -13,7 +13,7 @@ from .models import Run, User, AthleteInfo, Challenge, Position, CollectibleItem
 from django.shortcuts import get_object_or_404
 from geopy.distance import geodesic
 from django.db.models import Sum
-
+from openpyxl import load_workbook
 # Create your views here.
 
 @api_view(['GET'])
@@ -180,4 +180,57 @@ class CollectibleItemViewSet(viewsets.ModelViewSet):
     serializer_class = CollectibleItemSerializer
 
 class UploadFIleView(APIView):
-    pass
+    def post (self, request):
+        upload = request.FILES.get('file')
+
+        if not upload : 
+            return Response({"detail": "file is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not upload.name.lower().endswith('.xlsx'):
+            return Response({"detail": "only .xlsx files are allowed"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        workbook = load_workbook(upload)
+        sheet = workbook.active
+        rows = sheet.iter_rows(values_only=True)
+        headers = [ i.strip().lower() for i in next(rows) ]
+
+        try :
+            name_index = headers.index('name')
+            uid_index = headers.index('uid')
+            latitude_index = headers.index('latitude')
+            longitude_index = headers.index('longitude')
+            picture_index = headers.index('url')
+            value_index = headers.index('value')
+        except ValueError:
+            return Response (
+                {"detail": "Invalid Excel headers"},
+                status=status.HTTP_400_BAD_REQUEST
+                )
+        invalid_rows = []
+        created = 0
+
+        for row in rows:
+            if not row or all( v is None or (isinstance(v,str) and not v.strip())  for v in row ):
+                continue
+            
+            raw_row = list(row)
+
+            data = {
+                'name': raw_row[name_index],
+                'uid': raw_row[uid_index],
+                'latitude': raw_row[latitude_index],
+                'longitude': raw_row[longitude_index],
+                'picture': raw_row[picture_index],
+                'value': raw_row[value_index],   
+            }
+
+            serializer = CollectibleItemSerializer (data=data)
+            if serializer.is_valid():
+                serializer.save()
+                created += 1
+            else:
+                invalid_rows.append(raw_row)
+        return Response (
+            {'created': created, 'invalid_rows':invalid_rows},
+            status=status.HTTP_200_OK
+        )
