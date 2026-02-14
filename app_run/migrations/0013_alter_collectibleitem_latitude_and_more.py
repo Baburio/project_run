@@ -21,9 +21,5 @@ class Migration(migrations.Migration):
             name='longitude',
             field=models.FloatField(validators=[django.core.validators.MinValueValidator(-180), django.core.validators.MaxValueValidator(180)]),
         ),
-        migrations.AlterField(
-            model_name='collectibleitem',
-            name='value',
-            field=models.SmallIntegerField(unique=True),
-        ),
+
     ]
